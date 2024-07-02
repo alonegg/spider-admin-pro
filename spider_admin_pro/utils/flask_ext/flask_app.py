@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 import traceback
 from typing import Iterator
-from datetime import datetime
 
-from flask import Flask, Blueprint, Request
-
-from peewee import ModelSelect
+import six
+from flask import Flask, Blueprint, Response
+from peewee import ModelSelect, Model
 
 from spider_admin_pro.api_result import ApiResult
 from spider_admin_pro.exceptions.api_exception import ApiException
-from spider_admin_pro.utils.flask_ext.json.json_encoder import JSONEncoder
-from spider_admin_pro.utils.flask_ext.json.json_provider import JSONProvider
 from spider_admin_pro.utils.flask_ext.request import FlaskRequest
 
 
@@ -18,13 +15,18 @@ class FlaskApp(Flask):
     """
     扩展Flask
     """
-    # Flask <=2.0.0
-    json_encoder = JSONEncoder
-
-    # Flask > 2.0.0
-    json_provider_class = JSONProvider
-
     request_class = FlaskRequest
+
+    # 需要转为json的类型
+    json_data_class = (
+        ModelSelect,
+        Model,
+        Iterator,
+        list,
+        dict,
+        six.integer_types,
+        six.text_type
+    )
 
     def get(self, rule, **options):
         return self.route(rule, methods=['GET'], **options)
@@ -34,14 +36,11 @@ class FlaskApp(Flask):
 
     def make_response(self, rv):
 
-        if isinstance(rv, (Iterator, ModelSelect)):
-            rv = list(rv)
-
-        if isinstance(rv, (list, dict)) or rv is None:
+        if isinstance(rv, self.json_data_class) or rv is None:
             rv = ApiResult.success(rv)
 
         if isinstance(rv, ApiResult):
-            rv = rv.to_dict()
+            return Response(rv.to_json(), content_type='application/json;charset=utf-8')
 
         return super().make_response(rv)
 

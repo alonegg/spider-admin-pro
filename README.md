@@ -48,12 +48,12 @@ $ pip3 install spider-admin-pro
 $ pip3 install -U spider-admin-pro -i https://pypi.org/simple
 
 # Linux macOS 运行启动
-$ gunicorn 'spider_admin_pro.main:app'
+$ gunicorn 'spider_admin_pro:app'
 
 # windows 环境使用waitress 替换 gunicorn
 $ pip install waitress
 
-$ waitress-serve --listen=127.0.0.1:8000 'spider_admin_pro.main:app'
+$ waitress-serve --listen=127.0.0.1:8000 'spider_admin_pro:app'
 ```
 
 方式二：
@@ -85,7 +85,8 @@ pip install scrapy scrapyd scrapyd-client
 方式三：
 
 ```bash
-docker run -p 8000:8000 mouday/spider-admin-pro
+vim config.yaml # 配置文件文件内容见⬇️：配置参数
+docker run -e TZ=Asia/Shanghai -p 8000:8000 -v ./config.yml:/app/config.yml mouday/spider-admin-pro
 ```
 
 ## 配置参数
@@ -104,7 +105,7 @@ docker run -p 8000:8000 mouday/spider-admin-pro
 $ ls
 config.yml
 
-$ gunicorn 'spider_admin_pro.main:app'
+$ gunicorn 'spider_admin_pro:app'
 ```
 > 强烈建议：修改密码和秘钥项
 
@@ -115,22 +116,15 @@ eg:
 USERNAME: admin
 PASSWORD: "123456"
 
-# 秘钥，注意：下一版本将设置为默认
-JWT_KEY: "FU0qnuV4t8rr1pvg93NZL3DLn6sHrR1sCQqRzachbo0="
-
-# token过期时间，单位天。注意：下一版本将设置为默认
-EXPIRES: 7
-
 # scrapyd地址, 结尾不要加斜杆
 SCRAPYD_SERVER: "http://127.0.0.1:6800"
 
-# 日志文件夹，注意：下一版本将设置为默认
-LOG_DIR: 'logs'
-```
+# 【可选】支持 basic auth @since 2.0.8 
+SCRAPYD_USERNAME: ''
+SCRAPYD_PASSWORD: ''
 
-生成jwt key
-```
-$ python -c 'import base64;import os;print(base64.b64encode(os.urandom(32)).decode())'
+# 【可选】是否开开启前端静态文件预压缩以提升页面加载速度，默认为True
+COMPRESS_STATIC: True
 ```
 
 ## 使用扩展
@@ -164,9 +158,23 @@ $ python -c 'import base64;import os;print(base64.b64encode(os.urandom(32)).deco
 
 【公开仓库】基于Flask的后端项目spider-admin-pro: [https://github.com/mouday/spider-admin-pro](https://github.com/mouday/spider-admin-pro)
 
-【私有仓库】基于Vue的前端项目spider-admin-pro-web: [https://github.com/mouday/spider-admin-pro-web](https://github.com/mouday/spider-admin-pro-web)
+【私有仓库】基于Vue的前端项目spider-admin-pro-web: 获取方式往下看
 
 > 备注：前端Vue项目，可入QQ群发送github用户名获取权限
+
+获取前端源码的几个方式：
+
+- 方式一：提供github的用户名
+
+- 方式二：先赞助项目￥10，再提供github的用户名
+
+- 方式三：关注微信公众号：
+
+<img src="https://gitee.com/mouday/domain-admin/raw/master/image/coding-big-tree.jpg" width="300">
+
+回复：`spider-admin-web`，获取完整的前端代码
+
+回复：`spider-admin`，可加入Python技术交流群，和更多开发者学习交流遇到的问题
 
 spider-admin-pro项目主要目录结构：
 
@@ -229,6 +237,14 @@ Scrapyd 不能直接暴露在外网
 
 <img src="https://github.com/mouday/spider-admin-pro/raw/master/doc/img/qq-2.jpg" width="300"/>
 
+## 联系作者
+
+微信扫码二维码
+
+<img src="https://raw.githubusercontent.com/mouday/domain-admin/master/image/coding-big-tree.jpg" width="300">
+
+扫描二维码后，回复：Python，即可进入Python技术交流群，和技术大佬们学习交流
+
 ## 项目赞助
 
 | 日期 | 姓名 | 金额 | 
@@ -237,6 +253,23 @@ Scrapyd 不能直接暴露在外网
 | 2022-08-30 | [@yangxiaozhe13](https://github.com/yangxiaozhe13) | ￥88.00
 | 2022-09-01 | [@robot-2233](https://github.com/robot-2233) | ￥88.00
 | 2023-05-09 | 埃菲尔没有塔尖 | ￥68.80
+| 2023-09-21 | [@burujiuzheyang](https://github.com/burujiuzheyang) | ￥50.00
+| 2023-10-07 | [@Lnine9](https://github.com/Lnine9) | ￥20.00
+| 2023-10-09 | [@xiaoran-xr](https://github.com/xiaoran-xr) | ￥20.00
+| 2023-10-10 | [@hsdanbai](https://github.com/hsdanbai) | ￥20.00
+| 2023-10-19 | [@shuiniu86](https://github.com/shuiniu86) | ￥50.00
+| 2023-10-24 | [@yuzhou6](https://github.com/yuzhou6) | ￥50.00
+| 2023-11-13 | [@xuedipiaofei](https://github.com/xuedipiaofei) | ￥50.00
+| 2024-01-06 | [@if-always](https://github.com/if-always) | ￥10.00
+| 2024-01-21 | [@dydwgmcnl4241](https://github.com/dydwgmcnl4241) | ￥10.00
+| 2024-02-18 | [@zhaolipo](https://github.com/zhaolipo) | ￥10.00
+| 2024-02-19 | [@qianwangali](https://github.com/qianwangali) | ￥10.00
+| 2024-02-20 | 没事干的小伙子 | ￥8.88
+| 2024-02-20 | [@ning-0217](https://github.com/ning-0217) | ￥50.00
+| 2024-03-08 | [@zhaolipo](https://github.com/zhaolipo) | ￥20.00
+| 2024-03-18 | [@magiceric](https://github.com/magiceric) | ￥88.00
+
+<img src="https://github.com/mouday/spider-admin-pro/raw/master/doc/img/alipay.jpg" width="300">
 
 ## 项目截图
 
@@ -306,11 +339,11 @@ pip install pywin32
 
 ```bash
 # 启动运行
-$ gunicorn 'spider_admin_pro.main:app'
+$ gunicorn 'spider_admin_pro:app'
 
 # 支持外网可访问，云服务器（阿里云或腾讯云）需要设置安全组 
 # 默认内网访问 --bind 127.0.0.1:8000
-$ gunicorn --bind '0.0.0.0:8000' 'spider_admin_pro.main:app'
+$ gunicorn --bind '0.0.0.0:8000' 'spider_admin_pro:app'
 ```
 
 更多设置，可参考[gunicorn](https://docs.gunicorn.org/en/stable/index.html)

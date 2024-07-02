@@ -1,26 +1,20 @@
-# https://github.com/actions/starter-workflows/blob/main/ci/python-publish.yml
-name: Upload Python Package
+#https://github.com/yyx990803/release-tag
+
+name: Create Release
 
 on:
   push:
     tags:
-      - 'vxx*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
-permissions:
-  contents: read
+#on:
+#  push:
+#    branch: ['master']
 
 jobs:
-  deploy:
-
+  build:
+    name: Create Release
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/spider-admin-pro
-
-    permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing
-      id-token: write
-
     steps:
       - name: Checkout Master
         uses: actions/checkout@v4
@@ -67,12 +61,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
           python setup.py sdist bdist_wheel --python-tag py2.py3
-          twine check dist/*
 
-      # Publishing with a Trusted Publisher
-      # https://docs.pypi.org/trusted-publishers/using-a-publisher/
-      # https://github.com/pypa/gh-action-pypi-publish/
-      - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          packages-dir: spider_admin_pro/dist/
+          files: ./spider_admin_pro/dist/*
+          body: release new version
+          # note you'll typically need to create a personal access token
+          # with permissions to create releases in the other repo
